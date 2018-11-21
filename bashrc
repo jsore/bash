@@ -166,6 +166,58 @@ fi
 
 
 
+#----------  TODO: git integration  ----------#
+    # get current branch in git repo
+    function parse_git_branch() {
+        BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+        if [ ! "${BRANCH}" == "" ]
+        then
+            STAT=`parse_git_dirty`
+            echo "[${BRANCH}${STAT}]"
+        else
+            echo ""
+        fi
+    }
+
+    # get current status of git repo
+    function parse_git_dirty {
+        status=`git status 2>&1 | tee`
+        dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
+        untracked=`echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?"`
+        ahead=`echo -n "${status}" 2> /dev/null | grep "Your branch is ahead of" &> /dev/null; echo "$?"`
+        newfile=`echo -n "${status}" 2> /dev/null | grep "new file:" &> /dev/null; echo "$?"`
+        renamed=`echo -n "${status}" 2> /dev/null | grep "renamed:" &> /dev/null; echo "$?"`
+        deleted=`echo -n "${status}" 2> /dev/null | grep "deleted:" &> /dev/null; echo "$?"`
+        bits=''
+        if [ "${renamed}" == "0" ]; then
+            bits=">${bits}"
+        fi
+        if [ "${ahead}" == "0" ]; then
+            bits="*${bits}"
+        fi
+        if [ "${newfile}" == "0" ]; then
+            bits="+${bits}"
+        fi
+        if [ "${untracked}" == "0" ]; then
+            bits="?${bits}"
+        fi
+        if [ "${deleted}" == "0" ]; then
+            bits="x${bits}"
+        fi
+        if [ "${dirty}" == "0" ]; then
+            bits="!${bits}"
+        fi
+        if [ ! "${bits}" == "" ]; then
+            echo " ${bits}"
+        else
+            echo ""
+        fi
+    }
+
+    #export PS1="\`parse_git_branch\` "
+#----------  TODO: git integration  ----------#
+
+
 #----------  attempt 2, cleaned  ----------#
 #
 # Note to self: raw version can be found on Node.js/Apache VBox VM
@@ -192,7 +244,7 @@ then
     # >> _______________________________
     # >> jsore root /var/www/html/assets
     # >> --> #
-    PS1="\e[0;38;5;231;48;5;240mjsore \e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> #\[\e[0m\] "
+    PS1="`parse_git_branch`\n\e[0;38;5;231;48;5;240mjsore \e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> #\[\e[0m\] "
 else
     # if we're any other user...
 
