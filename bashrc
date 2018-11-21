@@ -175,7 +175,7 @@ fi
             STAT=`parse_git_dirty`
             echo "[${BRANCH}${STAT}]"
         else
-            echo ""
+            echo "No git branch found"
         fi
     }
 
@@ -210,7 +210,7 @@ fi
         if [ ! "${bits}" == "" ]; then
             echo " ${bits}"
         else
-            echo ""
+            echo "error"
         fi
     }
 
@@ -232,7 +232,7 @@ then
         num=`echo $(pwd) | wc -c`
         snum=`echo $(yes "_" | head -n $num)`
         trim="$(echo -e "${snum}" | tr -d '[:space:]')"
-        echo -e "\n__________${trim}"
+        echo -e "\n__________${trim}`parse_git_branch`\n"
     }
 
     # go ahead and spit out ^^^ then continue to $PS1
@@ -244,7 +244,7 @@ then
     # >> _______________________________
     # >> jsore root /var/www/html/assets
     # >> --> #
-    PS1="`parse_git_branch`\n\e[0;38;5;231;48;5;240mjsore \e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> #\[\e[0m\] "
+    PS1="\e[0;38;5;231;48;5;240mjsore \e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> #\[\e[0m\] "
 else
     # if we're any other user...
 
