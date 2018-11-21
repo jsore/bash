@@ -177,7 +177,7 @@ fi
             STAT=`parse_git_dirty`
             echo "[${BRANCH}${STAT}]"
         else
-            echo "No git branch found"
+            echo "This isn't a Git repo"
         fi
     }
 
@@ -212,7 +212,8 @@ fi
         if [ ! "${bits}" == "" ]; then
             echo " ${bits}"
         else
-            echo "error"
+            # if nothing to report, just echo the branch name
+            echo ""
         fi
     }
 
@@ -243,9 +244,6 @@ then
 
     # \e[38;5;$VAL  for foreground
     # \e[48;5;$VAL  for background
-    # >> _______________________________
-    # >> jsore root /var/www/html/assets
-    # >> --> #
     PS1="\e[0;38;5;231;48;5;240mjsore \u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> #\[\e[0m\] "
 else
     # if we're any other user...
@@ -263,8 +261,22 @@ else
 
     # \e[38;5;$VAL  for foreground
     # \e[48;5;$VAL  for background
-    # >> __________________________
-    # >> jsore /var/www/html/assets
+    # >> ___________________
+    # >> jsore /var/www/html
     # >> --> $
     PS1="\e[0;38;5;231;48;5;240m\e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> $\[\e[0m\] "
 fi
+
+# visualizing root user's prompt, git shows an edited file:
+#
+#       Git: [master !]                     <-- no BG color, golden/tan text color
+#       _______________________________     <-- no BG color, light-grey text color
+#       jsore root /var/www/html/assets     <-- mid-grey BG, bright white text color
+#       --> #                               <-- mid-grey BG, bright white text color
+
+# git sees no changes to watched files  --> Git: [master]
+# you're in a dir without a repo        --> Git: This isn't a Git repo
+#       
+#       _______________________________
+#       jsore root /var/www/html/assets
+#       --> #
