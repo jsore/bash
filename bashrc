@@ -1,8 +1,12 @@
 # /etc/bashrc
 
+#======================================
+#            File Defaults            =
+#======================================
+#
 # System wide functions and aliases
 # Environment stuff goes in /etc/profile
-
+#
 # It's NOT a good idea to change this file unless you know what you
 # are doing. It's much better to create a custom.sh shell script in
 # /etc/profile.d/ to make custom changes to your environment, as this
@@ -91,13 +95,13 @@ if ! shopt -q login_shell ; then # We're not a login shell
 fi
 # vim:ts=4:sw=4
 
+#================================================
+#            User-edited (my) Prompt            =
+#================================================
 #
-# LINODE VM
-#
+# Pretty CLI options
 
-
-# pretty CLI options
-#----------  attempt 1, keeping for the sake of notes  ----------#
+#----------  attempt 1, keeping solely for the sake of documentation  ----------#
 #if [ $(id -u) -eq 0 ];
 #then
 #    # you are root, set the env variables for root
@@ -158,10 +162,13 @@ fi
 #    #PS1="\e[0;38;5;231;48;5;240m\u \w\e[0m \n\[\e[1m\]$\[\e[0m\] "
 #    PS1="\e[0;38;5;231;48;5;240m\e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> $\[\e[0m\] "
 #fi
+#----------  attempt 1, keeping solely for the sake of documentation  ----------#
+
 
 
 #----------  attempt 2, cleaned  ----------#
-# raw version with commented code can be found on Node.js VBox VM
+#
+# Note to self: raw version can be found on Node.js/Apache VBox VM
 
 
 if [ $(id -u) -eq 0 ];
