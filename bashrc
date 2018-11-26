@@ -102,6 +102,23 @@ fi
 #================================================
 #
 # Pretty CLI options
+#
+
+# Visualizing what the following lines do:
+#
+#       Git: [master !]                     <-- no BG color, golden/tan text color
+#       _______________________________     <-- no BG color, light-grey text color
+#       jsore root /var/www/html/assets     <-- mid-grey BG, bright white text color
+#       --> #                               <-- mid-grey BG, bright white text color
+#
+# git message                       what it means
+# -----------                       -------------
+# Git: [master !]                   edits have been made to staged file(s)
+# Git: [master *]                   staged files committed but not pushed
+# Git: [master]                     commit is pushed, nothing else pending
+# Git: This isn't a Git repo        you're in a dir without a repo
+# ...
+
 
 #----------  attempt 1, keeping solely for the sake of documentation  ----------#
 #if [ $(id -u) -eq 0 ];
@@ -168,69 +185,66 @@ fi
 
 
 
-#----------  TODO: git integration  ----------#
-    # get current branch in git repo
-    function parse_git_branch() {
-        BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-        if [ ! "${BRANCH}" == "" ]
-        then
-            STAT=`parse_git_dirty`
-            echo "[${BRANCH}${STAT}]"
-        else
-            echo "This isn't a Git repo"
-        fi
-    }
+#----------  git integration  ----------#
+# get current branch in git repo
+function parse_git_branch() {
+    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    if [ ! "${BRANCH}" == "" ]
+    then
+        STAT=`parse_git_dirty`
+        echo "[${BRANCH}${STAT}]"
+    else
+        echo "This isn't a Git repo"
+    fi
+}
 
-    # get current status of git repo
-    function parse_git_dirty {
-        status=`git status 2>&1 | tee`
-        dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
-        untracked=`echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?"`
-        ahead=`echo -n "${status}" 2> /dev/null | grep "Your branch is ahead of" &> /dev/null; echo "$?"`
-        newfile=`echo -n "${status}" 2> /dev/null | grep "new file:" &> /dev/null; echo "$?"`
-        renamed=`echo -n "${status}" 2> /dev/null | grep "renamed:" &> /dev/null; echo "$?"`
-        deleted=`echo -n "${status}" 2> /dev/null | grep "deleted:" &> /dev/null; echo "$?"`
-        bits=''
-        if [ "${renamed}" == "0" ]; then
-            bits=">${bits}"
-        fi
-        if [ "${ahead}" == "0" ]; then
-            bits="*${bits}"
-        fi
-        if [ "${newfile}" == "0" ]; then
-            bits="+${bits}"
-        fi
-        if [ "${untracked}" == "0" ]; then
-            bits="?${bits}"
-        fi
-        if [ "${deleted}" == "0" ]; then
-            bits="x${bits}"
-        fi
-        if [ "${dirty}" == "0" ]; then
-            bits="!${bits}"
-        fi
-        if [ ! "${bits}" == "" ]; then
-            echo " ${bits}"
-        else
-            # if nothing to report, just echo the branch name
-            echo ""
-        fi
-    }
-
-    #export PS1="\`parse_git_branch\` "
-#----------  TODO: git integration  ----------#
+# get current status of git repo
+function parse_git_dirty {
+    status=`git status 2>&1 | tee`
+    dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
+    untracked=`echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?"`
+    ahead=`echo -n "${status}" 2> /dev/null | grep "Your branch is ahead of" &> /dev/null; echo "$?"`
+    newfile=`echo -n "${status}" 2> /dev/null | grep "new file:" &> /dev/null; echo "$?"`
+    renamed=`echo -n "${status}" 2> /dev/null | grep "renamed:" &> /dev/null; echo "$?"`
+    deleted=`echo -n "${status}" 2> /dev/null | grep "deleted:" &> /dev/null; echo "$?"`
+    bits=''
+    if [ "${renamed}" == "0" ]; then
+        bits=">${bits}"
+    fi
+    if [ "${ahead}" == "0" ]; then
+        bits="*${bits}"
+    fi
+    if [ "${newfile}" == "0" ]; then
+        bits="+${bits}"
+    fi
+    if [ "${untracked}" == "0" ]; then
+        bits="?${bits}"
+    fi
+    if [ "${deleted}" == "0" ]; then
+        bits="x${bits}"
+    fi
+    if [ "${dirty}" == "0" ]; then
+        bits="!${bits}"
+    fi
+    if [ ! "${bits}" == "" ]; then
+        echo " ${bits}"
+    else
+        # if nothing to report, just echo the branch name
+        echo ""
+    fi
+}
+#----------  git integration  ----------#
 
 
 #----------  attempt 2, cleaned  ----------#
 #
 # Note to self: raw version can be found on Node.js/Apache VBox VM
-
+#
 
 if [ $(id -u) -eq 0 ];
+# if we're root...
 then
-    # if we're root...
-
-    # print a line breaker based on length of our $PWD
+    # print a line breaker based on length of our $PWD and PS1 settings
     printer() {
         num=`echo $(pwd) | wc -c`
         snum=`echo $(yes "_" | head -n $num)`
@@ -238,45 +252,29 @@ then
         echo -e "\n\e[38;5;180mGit: `parse_git_branch`\e[0m\n__________${trim}"
     }
 
-    # go ahead and spit out ^^^ then continue to $PS1
-    PROMPT_COMMAND=printer
-    # TODO: clean this up, line breaker while in ~ dir is broken
+    # spits out printer(), parse_git_branch(), then continues to $PS1
+    PROMPT_COMMAND=printer  # TODO: clean this up, line breaker while in ~ dir is broken
 
-    # \e[38;5;$VAL  for foreground
-    # \e[48;5;$VAL  for background
+    # foreground:  \e[38;5;$VAL
+    # background:  \e[48;5;$VAL
+    # TODO: The color options are a mess, convert to variabls and echo them instead
     PS1="\e[0;38;5;231;48;5;240mjsore \u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> #\[\e[0m\] "
-else
-    # if we're any other user...
 
+# else, if we're any other user...
+else
+    # print a line breaker based on length of our $PWD and PS1 settings
     printer() {
         num=`echo $(pwd) | wc -c`
         snum=`echo $(yes "_" | head -n $num)`
         trim="$(echo -e "${snum}" | tr -d '[:space:]')"
-        # less text in prompt so less _'s required here
-        #echo -e "\n_____${trim}"
-        # new hotness, git stats:
         echo -e "\n\e[38;5;180mGit: `parse_git_branch`\e[0m\n_____${trim}"
     }
+
+    # spits out printer(), parse_git_branch(), then continues to $PS1
     PROMPT_COMMAND=printer
 
-    # \e[38;5;$VAL  for foreground
-    # \e[48;5;$VAL  for background
-    # >> ___________________
-    # >> jsore /var/www/html
-    # >> --> $
+    # foreground:  \e[38;5;$VAL
+    # background:  \e[48;5;$VAL
+    # TODO: The color options are a mess, convert to variabls and echo them instead
     PS1="\e[0;38;5;231;48;5;240m\e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> $\[\e[0m\] "
 fi
-
-# visualizing root user's prompt, git shows an edited file:
-#
-#       Git: [master !]                     <-- no BG color, golden/tan text color
-#       _______________________________     <-- no BG color, light-grey text color
-#       jsore root /var/www/html/assets     <-- mid-grey BG, bright white text color
-#       --> #                               <-- mid-grey BG, bright white text color
-
-# git sees no changes to watched files  --> Git: [master]
-# you're in a dir without a repo        --> Git: This isn't a Git repo
-#       
-#       _______________________________
-#       jsore root /var/www/html/assets
-#       --> #
