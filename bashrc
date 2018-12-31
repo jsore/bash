@@ -1,5 +1,7 @@
 # /etc/bashrc
 
+alias ls='ls -Gp'
+
 #======================================
 #            File Defaults            =
 #======================================
@@ -258,7 +260,7 @@ then
     # foreground:  \e[38;5;$VAL
     # background:  \e[48;5;$VAL
     # TODO: The color options are a mess, convert to variabls and echo them instead
-    PS1="\e[0;38;5;231;48;5;240mjsore \u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> #\[\e[0m\] "
+    PS1="\e[0;38;5;231;48;5;240mjsore \u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]#\[\e[0m\] "
 
 # else, if we're any other user...
 else
@@ -276,5 +278,5 @@ else
     # foreground:  \e[38;5;$VAL
     # background:  \e[48;5;$VAL
     # TODO: The color options are a mess, convert to variabls and echo them instead
-    PS1="\e[0;38;5;231;48;5;240m\e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]--> $\[\e[0m\] "
+    PS1="\e[0;38;5;231;48;5;240m\e[38;5;38m\u \e[38;5;231m\w\e[0m \n\[\e[38;5;231;48;5;240m\]$\[\e[0m\] "
 fi
