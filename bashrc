@@ -1,5 +1,6 @@
 # /etc/bashrc
 
+# ls colors...doesn't seem to work
 alias ls='ls -Gp'
 
 #======================================
