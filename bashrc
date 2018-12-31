@@ -248,10 +248,11 @@ if [ $(id -u) -eq 0 ];
 then
     # print a line breaker based on length of our $PWD and PS1 settings
     printer() {
-        num=`echo $(pwd) | wc -c`
-        snum=`echo $(yes "_" | head -n $num)`
-        trim="$(echo -e "${snum}" | tr -d '[:space:]')"
-        echo -e "\n\e[38;5;180mGit: `parse_git_branch`\e[0m\n__________${trim}"
+        #num=`echo $(pwd) | wc -c`
+        #snum=`echo $(yes "_" | head -n $num)`
+        #trim="$(echo -e "${snum}" | tr -d '[:space:]')"
+        #echo -e "\n\e[38;5;180mGit: `parse_git_branch`\e[0m\n__________${trim}"
+        echo -e "\n\e[38;5;180mGit: `parse_git_branch`\e[0m\n"
     }
 
     # spits out printer(), parse_git_branch(), then continues to $PS1
