@@ -1,7 +1,8 @@
 # /etc/bashrc
 
 # ls colors...doesn't seem to work
-alias ls='ls -Gp'
+#alias ls='ls -Gp'
+alias ls='ls -ACGp'
 
 #======================================
 #            File Defaults            =
