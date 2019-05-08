@@ -4,6 +4,11 @@
 # ...except for...
 !.gitignore
 !bashrc
+# yeah this one fucked with my head a little bit
+# wanted to add my personal bash profile here for tracking
+# could not figure out why
+# until I remembered that everything else in /etc everything is being ignored
+!macbook-bash
 
 # ...even if they're in subdirectories
 !*/
