@@ -8,7 +8,7 @@
 # wanted to add my personal bash profile here for tracking
 # could not figure out why
 # until I remembered that everything else in /etc everything is being ignored
-!macbook-bash
+!macbook-bash/.bash_profile
 
 # ...even if they're in subdirectories
 !*/
