@@ -199,7 +199,7 @@ function parse_git_branch() {
         STAT=`parse_git_dirty`
         echo "[${BRANCH}${STAT}]"
     else
-        echo "This isn't a Git repo"
+        echo "No GitHub remote found"
     fi
 }
 
@@ -272,8 +272,9 @@ else
     printer() {
         num=`echo $(pwd) | wc -c`
         snum=`echo $(yes "_" | head -n $num)`
-        trim="$(echo -e "${snum}" | tr -d '[:space:]')"
-        echo -e "\n\e[38;5;180mGit: `parse_git_branch`\e[0m\n_____${trim}"
+        #trim="$(echo -e "${snum}" | tr -d '[:space:]')"
+        #echo -e "\n\e[38;5;180mGit: `parse_git_branch`\e[0m\n_____${trim}"
+        echo -e "\n\e[38;5;180mGitHub: `parse_git_branch`\e[0m\n"
     }
 
     # spits out printer(), parse_git_branch(), then continues to $PS1
